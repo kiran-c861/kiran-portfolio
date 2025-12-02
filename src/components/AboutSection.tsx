@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { GraduationCap, Calendar, MapPin, Code2, Briefcase, Sparkles } from 'lucide-react';
+import { TiltCard } from './TiltCard';
+import { ParallaxSection } from './ParallaxSection';
 
 const stats = [
   { value: '8.02', label: 'CGPA', icon: GraduationCap },
@@ -17,7 +19,9 @@ export function AboutSection() {
   return (
     <section id="about" className="py-24 relative overflow-hidden" ref={ref}>
       {/* Background Element */}
-      <div className="hero-glow bg-secondary/20 top-1/2 left-1/4 -translate-y-1/2" />
+      <ParallaxSection speed={0.3}>
+        <div className="hero-glow bg-secondary/20 top-1/2 left-1/4 -translate-y-1/2" />
+      </ParallaxSection>
 
       <div className="container mx-auto px-4 lg:px-8">
         {/* Section Header */}
@@ -61,42 +65,33 @@ export function AboutSection() {
 
               {/* Quick Info */}
               <div className="grid grid-cols-2 gap-4 pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <span className="font-body text-xs text-muted-foreground block">Location</span>
-                    <span className="font-body text-sm text-foreground">Mangalore, KA</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
-                    <GraduationCap className="w-5 h-5 text-secondary" />
-                  </div>
-                  <div>
-                    <span className="font-body text-xs text-muted-foreground block">Degree</span>
-                    <span className="font-body text-sm text-foreground">BCA (CT)</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                    <Calendar className="w-5 h-5 text-accent" />
-                  </div>
-                  <div>
-                    <span className="font-body text-xs text-muted-foreground block">Batch</span>
-                    <span className="font-body text-sm text-foreground">2023 - 2027</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <span className="font-body text-xs text-muted-foreground block">Focus</span>
-                    <span className="font-body text-sm text-foreground">Full Stack Dev</span>
-                  </div>
-                </div>
+                {[
+                  { icon: MapPin, label: 'Location', value: 'Mangalore, KA', color: 'primary' },
+                  { icon: GraduationCap, label: 'Degree', value: 'BCA (CT)', color: 'secondary' },
+                  { icon: Calendar, label: 'Batch', value: '2023 - 2027', color: 'accent' },
+                  { icon: Sparkles, label: 'Focus', value: 'Full Stack Dev', color: 'primary' },
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.label}
+                    className="flex items-center gap-3"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.4 + index * 0.1 }}
+                    whileHover={{ x: 5 }}
+                  >
+                    <motion.div
+                      className={`w-10 h-10 rounded-lg bg-${item.color}/10 flex items-center justify-center`}
+                      whileHover={{ rotate: 360, scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <item.icon className={`w-5 h-5 text-${item.color}`} />
+                    </motion.div>
+                    <div>
+                      <span className="font-body text-xs text-muted-foreground block">{item.label}</span>
+                      <span className="font-body text-sm text-foreground">{item.value}</span>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -114,18 +109,26 @@ export function AboutSection() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="border-gradient p-6 rounded-2xl text-center group hover:glow-primary transition-all duration-300"
               >
-                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                  <stat.icon className="w-7 h-7 text-primary" />
-                </div>
-                <div className="font-display text-4xl font-bold text-gradient mb-2">
-                  {stat.value}
-                </div>
-                <div className="font-body text-sm text-muted-foreground uppercase tracking-wider">
-                  {stat.label}
-                </div>
+                <TiltCard className="border-gradient p-6 rounded-2xl text-center group hover:glow-primary transition-all duration-300">
+                  <motion.div
+                    className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors"
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <stat.icon className="w-7 h-7 text-primary" />
+                  </motion.div>
+                  <motion.div
+                    className="font-display text-4xl font-bold text-gradient mb-2"
+                    initial={{ scale: 1 }}
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    {stat.value}
+                  </motion.div>
+                  <div className="font-body text-sm text-muted-foreground uppercase tracking-wider">
+                    {stat.label}
+                  </div>
+                </TiltCard>
               </motion.div>
             ))}
           </motion.div>

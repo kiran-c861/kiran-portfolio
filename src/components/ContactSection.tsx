@@ -2,6 +2,8 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Send, Linkedin, Github, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { TiltCard } from './TiltCard';
+import { MagneticButton } from './MagneticButton';
 
 export function ContactSection() {
   const ref = useRef(null);
@@ -12,6 +14,7 @@ export function ContactSection() {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +58,7 @@ export function ContactSection() {
     {
       icon: Github,
       label: 'GitHub',
-      href: 'https://github.com/kiranc-861',
+      href: 'https://github.com/kiran-c861',
     },
   ];
 
@@ -101,12 +104,16 @@ export function ContactSection() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
-                  whileHover={{ x: 10 }}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card/50 hover:border-primary/50 transition-all group"
+                  whileHover={{ x: 10, scale: 1.02 }}
+                  className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card/50 hover:border-primary/50 hover:shadow-[0_0_20px_hsl(180_100%_50%_/_0.1)] transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <motion.div
+                    className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors"
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                  >
                     <item.icon className="w-6 h-6 text-primary" />
-                  </div>
+                  </motion.div>
                   <div>
                     <span className="font-body text-xs text-muted-foreground block">{item.label}</span>
                     <span className="font-body text-foreground">{item.value}</span>
@@ -119,29 +126,25 @@ export function ContactSection() {
             <h4 className="font-display text-lg font-bold mb-4">Connect With Me</h4>
             <div className="flex gap-4 mb-8">
               {socialLinks.map((social) => (
-                <motion.a
+                <MagneticButton
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-14 h-14 rounded-xl border border-border bg-card/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all"
+                  className="w-14 h-14 rounded-xl border border-border bg-card/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:shadow-[0_0_20px_hsl(180_100%_50%_/_0.2)] transition-all"
                 >
                   <social.icon className="w-6 h-6" />
-                </motion.a>
+                </MagneticButton>
               ))}
             </div>
 
             {/* Download Resume */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-primary text-primary-foreground font-display uppercase tracking-wider hover:bg-primary/90 transition-colors"
+            <MagneticButton
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-primary text-primary-foreground font-display uppercase tracking-wider hover:bg-primary/90 hover:shadow-[0_0_30px_hsl(180_100%_50%_/_0.3)] transition-all"
             >
               <Download className="w-5 h-5" />
               Download Resume
-            </motion.button>
+            </MagneticButton>
           </motion.div>
 
           {/* Contact Form */}
@@ -150,70 +153,91 @@ export function ContactSection() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <form onSubmit={handleSubmit} className="border-gradient p-8 rounded-2xl">
-              <h3 className="font-display text-2xl font-bold mb-6">Send a Message</h3>
+            <TiltCard className="border-gradient p-8 rounded-2xl">
+              <form onSubmit={handleSubmit}>
+                <h3 className="font-display text-2xl font-bold mb-6">Send a Message</h3>
 
-              <div className="space-y-6">
-                <div>
-                  <label className="font-body text-sm text-muted-foreground mb-2 block">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-input border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body text-foreground placeholder:text-muted-foreground"
-                    placeholder="John Doe"
-                  />
+                <div className="space-y-6">
+                  <motion.div
+                    animate={{
+                      scale: focusedField === 'name' ? 1.02 : 1,
+                    }}
+                  >
+                    <label className="font-body text-sm text-muted-foreground mb-2 block">
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onFocus={() => setFocusedField('name')}
+                      onBlur={() => setFocusedField(null)}
+                      className="w-full px-4 py-3 rounded-lg bg-input border border-border focus:border-primary focus:ring-1 focus:ring-primary focus:shadow-[0_0_20px_hsl(180_100%_50%_/_0.1)] outline-none transition-all font-body text-foreground placeholder:text-muted-foreground"
+                      placeholder="John Doe"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    animate={{
+                      scale: focusedField === 'email' ? 1.02 : 1,
+                    }}
+                  >
+                    <label className="font-body text-sm text-muted-foreground mb-2 block">
+                      Your Email
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onFocus={() => setFocusedField('email')}
+                      onBlur={() => setFocusedField(null)}
+                      className="w-full px-4 py-3 rounded-lg bg-input border border-border focus:border-primary focus:ring-1 focus:ring-primary focus:shadow-[0_0_20px_hsl(180_100%_50%_/_0.1)] outline-none transition-all font-body text-foreground placeholder:text-muted-foreground"
+                      placeholder="john@example.com"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    animate={{
+                      scale: focusedField === 'message' ? 1.02 : 1,
+                    }}
+                  >
+                    <label className="font-body text-sm text-muted-foreground mb-2 block">
+                      Your Message
+                    </label>
+                    <textarea
+                      required
+                      rows={5}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      onFocus={() => setFocusedField('message')}
+                      onBlur={() => setFocusedField(null)}
+                      className="w-full px-4 py-3 rounded-lg bg-input border border-border focus:border-primary focus:ring-1 focus:ring-primary focus:shadow-[0_0_20px_hsl(180_100%_50%_/_0.1)] outline-none transition-all font-body text-foreground placeholder:text-muted-foreground resize-none"
+                      placeholder="Tell me about your project..."
+                    />
+                  </motion.div>
+
+                  <MagneticButton
+                    onClick={() => {}}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-primary via-secondary to-accent text-primary-foreground font-display uppercase tracking-wider hover:opacity-90 hover:shadow-[0_0_30px_hsl(180_100%_50%_/_0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <motion.span
+                        className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                      />
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" />
+                        Send Message
+                      </>
+                    )}
+                  </MagneticButton>
                 </div>
-
-                <div>
-                  <label className="font-body text-sm text-muted-foreground mb-2 block">
-                    Your Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-input border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body text-foreground placeholder:text-muted-foreground"
-                    placeholder="john@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="font-body text-sm text-muted-foreground mb-2 block">
-                    Your Message
-                  </label>
-                  <textarea
-                    required
-                    rows={5}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg bg-input border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body text-foreground placeholder:text-muted-foreground resize-none"
-                    placeholder="Tell me about your project..."
-                  />
-                </div>
-
-                <motion.button
-                  type="submit"
-                  disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-primary via-secondary to-accent text-primary-foreground font-display uppercase tracking-wider hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <span className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5" />
-                      Send Message
-                    </>
-                  )}
-                </motion.button>
-              </div>
-            </form>
+              </form>
+            </TiltCard>
           </motion.div>
         </div>
       </div>
