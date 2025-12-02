@@ -1,6 +1,8 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { ExternalLink, Github, Code2, Database, Globe } from 'lucide-react';
+import { TiltCard } from './TiltCard';
+import { MagneticButton } from './MagneticButton';
 
 const projects = [
   {
@@ -88,56 +90,53 @@ export function ProjectsSection() {
               initial={{ opacity: 0, y: 50 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-              whileHover={{ y: -10 }}
-              className={`border-gradient p-6 rounded-2xl transition-all duration-300 ${getGlowClass(project.color)}`}
             >
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${getColorClass(project.color)}`}>
-                  <project.icon className="w-7 h-7" />
-                </div>
-                <span className="font-body text-xs text-muted-foreground">{project.date}</span>
-              </div>
-
-              {/* Content */}
-              <h3 className="font-display text-xl font-bold text-foreground mb-3">
-                {project.title}
-              </h3>
-              <p className="font-body text-sm text-muted-foreground mb-6 leading-relaxed">
-                {project.description}
-              </p>
-
-              {/* Tech Stack */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {project.tech.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-3 py-1 rounded-full bg-muted text-xs font-body text-muted-foreground"
+              <TiltCard className={`border-gradient p-6 rounded-2xl transition-all duration-300 h-full ${getGlowClass(project.color)}`}>
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <motion.div 
+                    className={`w-14 h-14 rounded-xl flex items-center justify-center ${getColorClass(project.color)}`}
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
                   >
-                    {tech}
-                  </span>
-                ))}
-              </div>
+                    <project.icon className="w-7 h-7" />
+                  </motion.div>
+                  <span className="font-body text-xs text-muted-foreground">{project.date}</span>
+                </div>
 
-              {/* Links */}
-              <div className="flex gap-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 text-sm font-body text-primary hover:text-primary/80 transition-colors"
-                >
-                  <Github className="w-4 h-4" />
-                  Code
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 text-sm font-body text-primary hover:text-primary/80 transition-colors"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Demo
-                </motion.button>
-              </div>
+                {/* Content */}
+                <h3 className="font-display text-xl font-bold text-foreground mb-3">
+                  {project.title}
+                </h3>
+                <p className="font-body text-sm text-muted-foreground mb-6 leading-relaxed">
+                  {project.description}
+                </p>
+
+                {/* Tech Stack */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {project.tech.map((tech) => (
+                    <motion.span
+                      key={tech}
+                      whileHover={{ scale: 1.1, y: -2 }}
+                      className="px-3 py-1 rounded-full bg-muted text-xs font-body text-muted-foreground cursor-default"
+                    >
+                      {tech}
+                    </motion.span>
+                  ))}
+                </div>
+
+                {/* Links */}
+                <div className="flex gap-4">
+                  <MagneticButton className="flex items-center gap-2 text-sm font-body text-primary hover:text-primary/80 transition-colors">
+                    <Github className="w-4 h-4" />
+                    Code
+                  </MagneticButton>
+                  <MagneticButton className="flex items-center gap-2 text-sm font-body text-primary hover:text-primary/80 transition-colors">
+                    <ExternalLink className="w-4 h-4" />
+                    Demo
+                  </MagneticButton>
+                </div>
+              </TiltCard>
             </motion.div>
           ))}
         </div>
@@ -149,17 +148,15 @@ export function ProjectsSection() {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="text-center mt-12"
         >
-          <motion.a
-            href="https://github.com/kiranc-861"
+          <MagneticButton
+            href="https://github.com/kiran-c861"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-primary/30 text-primary font-display text-sm uppercase tracking-wider hover:bg-primary/10 transition-all"
           >
             <Github className="w-5 h-5" />
             View All Projects on GitHub
-          </motion.a>
+          </MagneticButton>
         </motion.div>
       </div>
     </section>

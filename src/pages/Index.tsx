@@ -7,10 +7,18 @@ import { ProjectsSection } from '@/components/ProjectsSection';
 import { ExperienceSection } from '@/components/ExperienceSection';
 import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
+import { CustomCursor } from '@/components/CustomCursor';
+import { FloatingParticles } from '@/components/FloatingParticles';
 
 const Index = () => {
   return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden cursor-none lg:cursor-none">
+      {/* Custom Cursor */}
+      <CustomCursor />
+      
+      {/* Floating Particles */}
+      <FloatingParticles />
+      
       {/* 3D Background */}
       <Scene3D />
       
